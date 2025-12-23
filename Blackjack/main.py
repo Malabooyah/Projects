@@ -1,14 +1,50 @@
+"""
+Blackjack Game
+
+A command-line Blackjack game built in Python using object-oriented
+programming principles. The game simulates standard Blackjack rules,
+allowing a player to hit or stand against a dealer while tracking hand
+values, blackjacks, and busts.
+
+Author: Mal
+"""
+
 import random
 
 class Card:
+    """
+    Represents a single playing card.
+
+    Each card has a suit (spades, clubs, hearts, diamonds)
+    and a rank with an associated Blackjack value.
+    """
     def __init__(self, suit, rank):
+        """
+    Initializes a card with a suit and rank.
+
+    :param suit: String representing the card suit
+    :param rank: Dictionary containing card rank and value
+    """
         self.suit = suit
         self.rank = rank
     def __str__(self):
+        """
+    Returns a readable string representation of the card.
+
+    Example: 'A of Spades'
+    """
         return f"{self.rank['rank']} of {self.suit.title()}"
 
 class Deck:
+    """
+    Represents a standard 52-card deck.
+
+    Handles deck creation, shuffling, and dealing cards.
+    """
     def __init__(self):
+        """
+    Initializes a full deck of 52 playing cards.
+    """
         self.cards = []
         suits = ['spades',  'clubs', 'hearts', 'diamonds']
         ranks = [
@@ -32,10 +68,19 @@ class Deck:
                 self.cards.append(Card(suit, rank))
 
     def shuffle(self):
+        """
+    Randomly shuffles the deck if it contains more than one card.
+    """
         if len(self.cards) > 1:
             random.shuffle(self.cards)
 
     def deal(self, number):
+        """
+    Removes and returns a specified number of cards from the deck.
+
+    :param number: Integer number of cards to deal
+    :return: List of Card objects
+    """
         cards_dealt = []
         for x in range(number):
             if len(self.cards) > 0:
@@ -44,15 +89,36 @@ class Deck:
         return cards_dealt
 
 class Hand:
+    """
+    Represents a Blackjack hand.
+
+    Stores cards, calculates hand value, and determines
+    Blackjack conditions. Can represent either a player or dealer hand.
+    """
     def __init__(self, dealer=False):
+        """
+    Initializes an empty hand.
+
+    :param dealer: Boolean indicating if this is the dealer's hand
+    """
         self.cards = []
         self.value = 0
         self.dealer = dealer
 
     def add_card(self, card_list):
+        """
+    Adds one or more cards to the hand.
+
+    :param card_list: List of Card objects
+    """
         self.cards.extend(card_list)
 
     def calc_value(self):
+        """
+    Calculates the total value of the hand.
+
+    Handles Ace value adjustment (11 or 1) to prevent busting.
+    """
         self.value = 0
         has_ace = False
 
@@ -66,18 +132,35 @@ class Hand:
             self.value -= 10
 
     def get_value(self):
+        """
+    Returns the current total value of the hand.
+
+    :return: Integer hand value
+    """
         self.calc_value()
         return self.value
 
     def is_blackjack(self):
+        """
+    Checks if the hand is a Blackjack (value of 21).
+
+    :return: Boolean
+    """
         return self.get_value() == 21
 
     def display(self, show_all_dealer_cards=False):
+        """
+    Displays the hand to the console.
+
+    Dealer's first card remains hidden unless explicitly revealed.
+
+    :param show_all_dealer_cards: Boolean to reveal dealer's full hand
+    """
         print(f'''{"Dealer's" if self.dealer else "Your"} hand: ''')
         for index, card in enumerate(self.cards):
             if index == 0 and self.dealer \
             and not show_all_dealer_cards and not self.is_blackjack():
-                print("hidden")  
+                print("hidden")
             else:
                 print(card)
 
@@ -87,7 +170,20 @@ class Hand:
         print()
 
 class Game:
+    """
+    Controls the overall flow of the Blackjack game.
+
+    Handles player input, dealer logic, game rounds,
+    and win condition evaluation.
+    """
     def play(self):
+        def play(self):
+            """
+    Starts and manages the Blackjack game loop.
+
+    Handles deck setup, card dealing, player decisions,
+    dealer actions, and game results across multiple rounds.
+    """
         game_number = 0
         games_to_play = 0
 
@@ -96,9 +192,9 @@ class Game:
                 games_to_play = int(input("How many games would you like to play?: "))
             except:
                 print("Must enter a number.")
-        
+
         while game_number < games_to_play:
-            game_number += 1 
+            game_number += 1
 
             deck = Deck()
             deck.shuffle()
@@ -109,7 +205,7 @@ class Game:
             for i in range(2):
                 player_hand.add_card(deck.deal(1))
                 dealer_hand.add_card(deck.deal(1))
-            
+
             print()
             print("*" * 30)
             print(f'''Game {game_number} of {games_to_play}!''')
@@ -142,7 +238,7 @@ class Game:
             while dealer_hand_value < 17:
                 dealer_hand.add_card(deck.deal(1))
                 dealer_hand_value = dealer_hand.get_value()
-                
+
             dealer_hand.display(show_all_dealer_cards=True)
 
             if self.check_winner(player_hand, dealer_hand):
@@ -155,8 +251,18 @@ class Game:
             self.check_winner(player_hand, dealer_hand, True)
 
         print("\nThanks for playing!")
-            
+
     def check_winner(self, player_hand, dealer_hand, game_over=False):
+        """
+    Determines the outcome of the game.
+
+    Evaluates busts, blackjacks, ties, and final hand comparisons.
+
+    :param player_hand: Hand object for the player
+    :param dealer_hand: Hand object for the dealer
+    :param game_over: Boolean indicating final evaluation phase
+    :return: Boolean indicating whether the round has ended
+    """
         if not game_over:
             if player_hand.get_value() > 21:
                 print("You busted! Dealer wins.")
