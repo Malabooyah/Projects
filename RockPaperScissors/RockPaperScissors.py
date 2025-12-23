@@ -1,6 +1,7 @@
 import random
 player_name = input("Player 1 enter your name: ").strip().title()
 
+##Sets win goal
 while True:
 	try:
 		win_goal = int(input(f"Hi {player_name}, how many wins to finish the match today?"))
@@ -16,8 +17,8 @@ while True:
 def get_choices():
 	options = ["rock", "paper", "scissors"]
 	player_choice = ""
+	
 	# keep asking until player types valid response
-
 	while player_choice not in options:
 		player_choice = input ("Enter a choice (rock, paper, scissors): ").lower().strip()
 		if player_choice not in options:
