@@ -177,24 +177,18 @@ class Game:
     and win condition evaluation.
     """
     def play(self):
-        def play(self):
-            """
-    Starts and manages the Blackjack game loop.
+        """
+        Starts and manages the Blackjack game loop.
 
-    Handles deck setup, card dealing, player decisions,
-    dealer actions, and game results across multiple rounds.
-    """
-        game_number = 0
-        games_to_play = 0
+        Handles deck setup, card dealing, player decisions,
+        dealer actions, and game results across multiple rounds.
+        """
 
-        while games_to_play <= 0:
-            try:
-                games_to_play = int(input("How many games would you like to play?: "))
-            except:
-                print("Must enter a number.")
+        stats = {'rounds': 0 ,'wins': 0, 'losses': 0, 'ties': 0}
+        playing = True
+        while playing:
 
-        while game_number < games_to_play:
-            game_number += 1
+            stats["rounds"] += 1
 
             deck = Deck()
             deck.shuffle()
@@ -208,12 +202,24 @@ class Game:
 
             print()
             print("*" * 30)
-            print(f'''Game {game_number} of {games_to_play}!''')
+            print(f'''New Game!''')
             print('*' * 30)
             player_hand.display()
             dealer_hand.display()
 
-            if self.check_winner(player_hand, dealer_hand):
+            result = self.check_winner(player_hand, dealer_hand)
+            if result:
+                if result == "player":
+                    stats['wins'] += 1
+                elif result == "dealer":
+                    stats['losses'] += 1
+                else:
+                    stats['ties'] += 1
+
+                play_again = input('Play again? (y/n): ').lower().strip()
+                if play_again in ('n', 'no'):
+                    playing = False
+                    break
                 continue
 
             choice = ""
@@ -229,7 +235,19 @@ class Game:
                 else:
                     print("Invalid choice. Please enter Hit or Stand.")
 
-            if self.check_winner(player_hand, dealer_hand):
+            result = self.check_winner(player_hand, dealer_hand)
+            if result:
+                if result == "player":
+                    stats['wins'] += 1
+                elif result == "dealer":
+                    stats['losses'] += 1
+                else:
+                    stats['ties'] += 1
+
+                play_again = input('Play again? (y/n): ').lower().strip()
+                if play_again in ('n', 'no'):
+                    playing = False
+                    break
                 continue
 
             player_hand_value = player_hand.get_value()
@@ -241,16 +259,47 @@ class Game:
 
             dealer_hand.display(show_all_dealer_cards=True)
 
-            if self.check_winner(player_hand, dealer_hand):
+            result = self.check_winner(player_hand, dealer_hand)
+            if result:
+                if result == "player":
+                    stats['wins'] += 1
+                elif result == "dealer":
+                    stats['losses'] += 1
+                else:
+                    stats['ties'] += 1
+
+                play_again = input('Play again? (y/n): ').lower().strip()
+                if play_again in ('n', 'no'):
+                    playing = False
+                    break
                 continue
 
             print("Final Results")
             print("your hand:", player_hand_value)
             print("dealer hand:", dealer_hand_value)
 
-            self.check_winner(player_hand, dealer_hand, True)
+            result = self.check_winner(player_hand, dealer_hand, True)
+            if result:
+                if result == "player":
+                    stats['wins'] += 1
+                elif result == "dealer":
+                    stats['losses'] += 1
+                else:
+                    stats['ties'] += 1
 
+            play_again = input('Play again? (y/n): ').lower().strip()
+            if play_again in ('n','no'):
+                playing = False
+                break
+
+        print("\nSession Stats")
+        print("-" * 30)
+        print("Rounds:", stats["rounds"])
+        print("Wins:", stats["wins"])
+        print("Losses:", stats["losses"])
+        print("Ties:", stats["ties"])
         print("\nThanks for playing!")
+
 
     def check_winner(self, player_hand, dealer_hand, game_over=False):
         """
@@ -266,28 +315,31 @@ class Game:
         if not game_over:
             if player_hand.get_value() > 21:
                 print("You busted! Dealer wins.")
-                return True
+                return "dealer"
             elif dealer_hand.get_value() > 21:
                 print("Dealer busted! You win.")
-                return True
+                return "player"
             elif dealer_hand.is_blackjack() and player_hand.is_blackjack():
                 print("Double 21? A push if I have ever seen one!")
-                return True
+                return "tie"
             elif player_hand.is_blackjack():
                 print("That there is a blackjack! You win.")
-                return True
+                return "player"
             elif dealer_hand.is_blackjack():
-                print("That there is a blackjack..but for the Dealer! Dealer win.")
-                return True
+                print("That there is a blackjack..but for the Dealer! Dealer wins.")
+                return "dealer"
         else:
             if player_hand.get_value() > dealer_hand.get_value():
                 print("You win!")
+                return "player"
             elif player_hand.get_value() == dealer_hand.get_value():
-                print("You tied! Even money.")
+                print("Push! Even money.")
+                return "tie"
             else:
-                print("Dealer win..you lose!")
+                print("Dealer wins..you lose!")
+                return "dealer"
             return True
-        return False
+        return None
 
 g = Game()
 g.play()
