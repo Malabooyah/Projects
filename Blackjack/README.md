@@ -16,6 +16,10 @@ This project was created to strengthen Python fundamentals, OOP design, and debu
 
 -Support for playing multiple games in a single session
 
+-Replay functionality allowing continuous gameplay
+
+-Session statistics tracking wins, losses, ties, and rounds played
+
 🛠️ Tech Stack
 
 -Python
@@ -47,7 +51,6 @@ This project was created to strengthen Python fundamentals, OOP design, and debu
 -> Run the game from the terminal:
 
 python main.py
-
 
 -> Follow the on-screen prompts to play
 
