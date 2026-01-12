@@ -120,16 +120,16 @@ class Hand:
     Handles Ace value adjustment (11 or 1) to prevent busting.
     """
         self.value = 0
-        has_ace = False
+        ace_count = 0
 
         for card in self.cards:
-            card_value = int(card.rank["value"])
-            self.value += card_value
+            self.value += int(card.rank['value'])
             if card.rank['rank'] == 'A':
-                has_ace = True
+                ace_count += 1
 
-        if has_ace and self.value > 21:
+        while self.value > 21 and ace_count > 0:
             self.value -= 10
+            ace_count -= 1
 
     def get_value(self):
         """
@@ -176,6 +176,22 @@ class Game:
     Handles player input, dealer logic, game rounds,
     and win condition evaluation.
     """
+    def handle_round_end(self, result, stats):
+        """Update stats and asks if player wants another round. Returns value
+        True to continue and False to stop"""
+        if not result:
+            return None
+
+        if result == "player":
+            stats["wins"] += 1
+        elif result == "dealer":
+            stats["losses"] += 1
+        else:
+            stats["ties"] += 1
+
+        play_again = input("Play again? (y/n): ").lower().strip()
+        return play_again not in ("n", "no")
+
     def play(self):
         """
         Starts and manages the Blackjack game loop.
@@ -209,17 +225,6 @@ class Game:
 
             result = self.check_winner(player_hand, dealer_hand)
             if result:
-                if result == "player":
-                    stats['wins'] += 1
-                elif result == "dealer":
-                    stats['losses'] += 1
-                else:
-                    stats['ties'] += 1
-
-                play_again = input('Play again? (y/n): ').lower().strip()
-                if play_again in ('n', 'no'):
-                    playing = False
-                    break
                 continue
 
             choice = ""
@@ -237,17 +242,6 @@ class Game:
 
             result = self.check_winner(player_hand, dealer_hand)
             if result:
-                if result == "player":
-                    stats['wins'] += 1
-                elif result == "dealer":
-                    stats['losses'] += 1
-                else:
-                    stats['ties'] += 1
-
-                play_again = input('Play again? (y/n): ').lower().strip()
-                if play_again in ('n', 'no'):
-                    playing = False
-                    break
                 continue
 
             player_hand_value = player_hand.get_value()
@@ -261,17 +255,6 @@ class Game:
 
             result = self.check_winner(player_hand, dealer_hand)
             if result:
-                if result == "player":
-                    stats['wins'] += 1
-                elif result == "dealer":
-                    stats['losses'] += 1
-                else:
-                    stats['ties'] += 1
-
-                play_again = input('Play again? (y/n): ').lower().strip()
-                if play_again in ('n', 'no'):
-                    playing = False
-                    break
                 continue
 
             print("Final Results")
@@ -279,18 +262,12 @@ class Game:
             print("dealer hand:", dealer_hand_value)
 
             result = self.check_winner(player_hand, dealer_hand, True)
-            if result:
-                if result == "player":
-                    stats['wins'] += 1
-                elif result == "dealer":
-                    stats['losses'] += 1
-                else:
-                    stats['ties'] += 1
-
-            play_again = input('Play again? (y/n): ').lower().strip()
-            if play_again in ('n','no'):
+            decision = self.handle_round_end(result, stats)
+            if decision is False:
                 playing = False
                 break
+            elif decision is True:
+                continue
 
         print("\nSession Stats")
         print("-" * 30)
