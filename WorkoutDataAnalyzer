@@ -1,0 +1,30 @@
+import numpy as np
+
+#Bench Press Workout Data
+weights = np.array([135,185,205,225,245])
+reps= np.array([12,10,8,4,2])
+
+##Calculates volumes for each set
+set_volumes= weights * reps
+
+##Workout Stats
+total_volume =np.sum(set_volumes)
+total_reps = np.sum(reps)
+average_weight = np.mean(weights)
+average_reps = np.mean(reps)
+max_weight = np.max(weights)
+hardest_set_index = np.argmax(set_volumes)
+intensity = max_weight / average_weight
+
+print("Bench Press Workout Analysis")
+print("----------------------------")
+print(f"Weights: {weights}")
+print(f"Reps: {reps}")
+print(f"Set Volumes: {set_volumes}")
+print(f"Total Reps: {total_reps}")
+print(f"Total Volume: {total_volume}")
+print(f"Average Weight: {round(average_weight, 2)}")
+print(f"Average Reps: {round(average_reps, 2)}")
+print(f"Heaviest Set: {max_weight}")
+print(f"Hardest Set(by volume): Set {hardest_set_index + 1}")
+print(f"Intensity Ratio: {round(intensity, 2)}")
