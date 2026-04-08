@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 #Bench Press Workout Data
 weights = np.array([
@@ -27,6 +28,7 @@ overall_max_weight = np.max(weights)
 print("Bench Press Workout Analysis")
 print("============================")
 
+#Shows stats per workout
 for i in range(len(weights)):
     print(f"\nWorkout {i+1}")
     print("----------------------------")
@@ -40,8 +42,22 @@ for i in range(len(weights)):
     print(f"Heaviest Set: {max_weight_per_workout[i]}")
     print(f"Hardest Set(by volume): Set {hardest_set_per_workout}")
 
+#Shows overall stats over time
 print("\nOverall Analysis")
 print("----------------------------")
 print(f"Total Volume per Workout: {total_volume_per_workout}")
 print(f"Best Workout: {best_workout}")
 print(f"Overall Heaviest Weight: {overall_max_weight}")
+
+## Data Visualization in a graph
+workouts= np.arange(1, len(total_volume_per_workout)+1)
+plt.plot(workouts, total_volume_per_workout, marker='o')
+
+for i, v in enumerate(total_volume_per_workout):
+    plt.text(workouts[i], v, str(v))
+
+plt.title('Workout Volume Progress')
+plt.xlabel("Workout Number")
+plt.ylabel("Total Volume")
+
+plt.show()
