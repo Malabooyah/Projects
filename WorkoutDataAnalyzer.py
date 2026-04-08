@@ -40,7 +40,7 @@ for i in range(len(weights)):
     print(f"Average Weight: {round(average_weight_per_workout[i], 2)}")
     print(f"Average Reps: {round(average_reps_per_workout[i], 2)}")
     print(f"Heaviest Set: {max_weight_per_workout[i]}")
-    print(f"Hardest Set(by volume): Set {hardest_set_per_workout}")
+    print(f"Hardest Set(by volume): Set {hardest_set_per_workout[i]}")
 
 #Shows overall stats over time
 print("\nOverall Analysis")
@@ -54,10 +54,10 @@ workouts= np.arange(1, len(total_volume_per_workout)+1)
 plt.plot(workouts, total_volume_per_workout, marker='o')
 
 for i, v in enumerate(total_volume_per_workout):
-    plt.text(workouts[i], v, str(v))
+    plt.text(workouts[i], v+40, str(v), ha='center')
 
 plt.title('Workout Volume Progress')
 plt.xlabel("Workout Number")
 plt.ylabel("Total Volume")
-
+plt.grid(True, alpha=0.3)
 plt.show()
